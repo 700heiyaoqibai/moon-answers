@@ -2,7 +2,7 @@
 // Answers Back" bounty. Written by hand in this session. The program
 // writes the line to /output/entry.txt (or $MAKEFUN_OUTPUT_DIR).
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 // Four billion years old, tired of being wished upon, and still
@@ -22,4 +22,8 @@ const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
 const target = join(outDir, "entry.txt");
 writeFileSync(target, LINE, "utf8");
+// Read it back: what the judge will read must be exactly the line.
+if (readFileSync(target, "utf8") !== LINE) {
+  throw new Error("the written entry.txt differs from the line");
+}
 console.log(`wrote ${target} (${length} characters)`);
